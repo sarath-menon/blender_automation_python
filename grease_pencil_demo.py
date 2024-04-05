@@ -15,6 +15,21 @@ def create_grease_pencil_object():
     gpencil = bpy.data.objects["GPencil"]
     return gpencil
 
+def create_grease_pencil_layer(gpencil):
+    # Create a new layer if it doesn't exist
+    if "GPlayer" not in gpencil.data.layers:
+        gpencil.data.layers.new(name="GPlayer", set_active=True)
+    layer = gpencil.data.layers["GPlayer"]
+    return layer
+
+
+def create_grease_pencil_frame(layer):
+    # Create a new frame if it doesn't exist
+    if not layer.frames:
+        frame = layer.frames.new(0)
+    else:
+        frame = layer.frames[0]
+    return frame
 
 switch_to_2d_animation_workspace()
 
@@ -23,16 +38,9 @@ gpencil = create_grease_pencil_object()
 # Ensure we're in draw mode
 bpy.ops.object.mode_set(mode='PAINT_GPENCIL')
 
-# # Create a new layer if it doesn't exist
-# if "GPlayer" not in gpencil.data.layers:
-#     gpencil.data.layers.new(name="GPlayer", set_active=True)
-# layer = gpencil.data.layers["GPlayer"]
+layer = create_grease_pencil_layer(gpencil)
 
-# # Create a new frame if it doesn't exist
-# if not layer.frames:
-#     frame = layer.frames.new(0)
-# else:
-#     frame = layer.frames[0]
+frame = create_grease_pencil_frame(layer)
 
 # # Create a new stroke
 # stroke = frame.strokes.new()
