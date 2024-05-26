@@ -29,14 +29,48 @@ for bone_name, head_pos, tail_pos in bone_data:
     if bone_name in ["left_arm", "right_arm", "left_leg", "right_leg"]:
         bone.parent = armature.data.edit_bones["spine"]
 
-# Add a spherical head just above the neck
-bpy.ops.object.mode_set(mode='EDIT')
-bpy.ops.mesh.primitive_uv_sphere_add(radius=0.1, location=(0, 0.3, 0.0))
-head = bpy.context.object
-head.parent = armature
-head.parent_type = 'BONE'
-head.parent_bone = 'spine'
 
-# Exit edit mode to save bones and head
+# Ensure we're in object mode and select the armature
 bpy.ops.object.mode_set(mode='OBJECT')
+armature = bpy.context.object
+bpy.context.view_layer.objects.active = armature
+bpy.ops.object.select_all(action='DESELECT')
+armature.select_set(True)
 
+# Switch to pose mode to animate bones
+bpy.ops.object.mode_set(mode='POSE')
+
+# Get the pose bones
+pose_bones = armature.pose.bones
+
+# Make sure the bone names are correct
+if 'right_arm' in pose_bones:
+    # Frame 1: Initial position
+    bpy.context.scene.frame_set(1)
+    pose_bones['right_arm'].rotation_euler[0] = 0
+    pose_bones['right_arm'].keyframe_insert(data_path="rotation_euler", index=0)
+
+    # Frame 10: Move right arm up
+    bpy.context.scene.frame_set(10)
+    pose_bones['right_arm'].rotation_euler[0] = 1.5  # Rotate by 1.5 radians
+    pose_bones['right_arm'].keyframe_insert(data_path="rotation_euler", index=0)
+
+    # Frame 20: Return to initial position
+    bpy.context.scene.frame_set(20)
+    pose_bones['right_arm'].rotation_euler[0] = 0
+    pose_bones['right_arm'].keyframe_insert(data_path="rotation_euler", index=0)
+
+    # Set animation playback range
+    bpy.context.scene.frame_start = 1
+    bpy.context.scene.frame_end = 20
+
+    # Return to object mode
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+    # Play animation
+    bpy.ops.screen.animation_play()
+else:
+    print("Bone 'right_arm' not found. Check bone names.")
+
+bpy.ops.screen.animation_play()  
+ 
