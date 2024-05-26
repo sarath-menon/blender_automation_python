@@ -11,8 +11,8 @@ bpy.ops.mesh.primitive_uv_sphere_add(radius=1)
 bpy.context.scene.frame_end = 100
 
 # Add keyframes for a realistic bounce
-frames = [0, 3, 6, 9, 12, 15]  # Time frames
-heights = [0, 3, 0, 2, 0, 1]  # Corresponding heights at each frame
+frames = [0, 3, 6, 9, 12, 15, 18]  # Time frames
+heights = [0, 3, 0, 2, 0, 1, 0]  # Corresponding heights at each frame
 
 for frame, height in zip(frames, heights):
     bpy.context.object.location = (0, 0, height)
@@ -23,7 +23,7 @@ bpy.context.view_layer.objects.active = bpy.context.object
 bpy.context.object.select_set(True)
 
 # Get the animation data of the object
-animation_data = bpy.context.object.animation_data
+animation_data = bpy.context.object.animation_data 
 
 # Check if the object has animation data and action
 if animation_data and animation_data.action:
