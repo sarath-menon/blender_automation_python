@@ -10,21 +10,13 @@ bpy.ops.mesh.primitive_uv_sphere_add(radius=1)
 # set anim end frame  
 bpy.context.scene.frame_end = 100
 
-# add keyframe
-frame = 0
-bpy.context.object.location = (0,0,0)
-bpy.context.object.keyframe_insert(data_path="location", frame=frame)
+# Add keyframes for a realistic bounce
+frames = [0, 3, 6, 9, 12, 15]  # Time frames
+heights = [0, 3, 0, 2, 0, 1]  # Corresponding heights at each frame
 
-# add keyframe
-frame = 3
-bpy.context.object.location = (0,0,3)
-bpy.context.object.keyframe_insert(data_path="location", frame=frame)
-
-
-# add keyframe 
-frame = 6
-bpy.context.object.location = (0,0,0)
-bpy.context.object.keyframe_insert(data_path="location", frame=frame)
+for frame, height in zip(frames, heights):
+    bpy.context.object.location = (0, 0, height)
+    bpy.context.object.keyframe_insert(data_path="location", frame=frame)
 
 # Ensure the object is selected and active
 bpy.context.view_layer.objects.active = bpy.context.object
@@ -47,13 +39,14 @@ if animation_data and animation_data.action:
                 keyframe_point.interpolation = 'BEZIER'
                 # Set handle types
                 keyframe_point.handle_left_type = 'ALIGNED'
-                keyframe_point.handle_right_type = 'ALIGNED'
-                # Set frame and value for each handle
+                keyframe_point.handle_right_type = 'ALIGNED' 
+                # Adjust handles for more realistic bounce
                 keyframe_point.handle_left.x = keyframe_point.co.x - 1
-                keyframe_point.handle_left.y = keyframe_point.co.y
+                keyframe_point.handle_left.y = keyframe_point.co.y + (0.5 if keyframe_point.co.y != 0 else 0)
                 keyframe_point.handle_right.x = keyframe_point.co.x + 1
-                keyframe_point.handle_right.y = keyframe_point.co.y
- 
+                keyframe_point.handle_right.y = keyframe_point.co.y + (0.5 if keyframe_point.co.y != 0 else 0)
+
 # play animation      
 bpy.context.scene.frame_set(0)    
+bpy.ops.screen.animation_play() 
 bpy.ops.screen.animation_play() 
